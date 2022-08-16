@@ -1,12 +1,15 @@
 package com.microservice.inventoryservice.service;
 
+import com.microservice.inventoryservice.dto.InventoryResponse;
 import com.microservice.inventoryservice.model.Inventory;
 import com.microservice.inventoryservice.repository.InventoryRepository;
-import com.microservice.inventoryservice.dto.InventoryDto;
+import com.microservice.inventoryservice.dto.InventoryRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service
@@ -16,22 +19,29 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
 
     @Transactional(readOnly = true)
-    public boolean isInStock(String skuCode){
+    public List<InventoryResponse> isInStock(List<String> skuCode) {
         log.info("GET: Find by {}", skuCode);
-        return inventoryRepository.findBySkuCode(skuCode).isPresent();
+        List<Inventory> listInventory = inventoryRepository.findBySkuCodeIn(skuCode);
+        List<InventoryResponse> responseList = listInventory.stream()
+                .map(inventory -> InventoryResponse.builder()
+                        .skuCode(inventory.getSkuCode())
+                        .isInStock(inventory.getQuantity() > 0)
+                        .build())
+                .toList();
+        return responseList;
     }
 
     @Transactional
-    public void createInventory(InventoryDto inventoryDto){
-        Inventory inventory = mapToInventory(inventoryDto);
+    public void createInventory(InventoryRequest inventoryRequest) {
+        Inventory inventory = mapToInventory(inventoryRequest);
         inventoryRepository.save(inventory);
-        log.info("POST: Inventory {} created successfully.",inventory.getId());
+        log.info("POST: Inventory {} created successfully.", inventory.getId());
     }
 
-    private Inventory mapToInventory(InventoryDto inventoryDto) {
+    private Inventory mapToInventory(InventoryRequest inventoryRequest) {
         Inventory inventory = new Inventory();
-        inventory.setQuantity(inventoryDto.getQuantity());
-        inventory.setSkuCode(inventoryDto.getSkuCode());
+        inventory.setQuantity(inventoryRequest.getQuantity());
+        inventory.setSkuCode(inventoryRequest.getSkuCode());
         return inventory;
     }
 }
