@@ -22,13 +22,12 @@ public class InventoryService {
     public List<InventoryResponse> isInStock(List<String> skuCode) {
         log.info("GET: Find by {}", skuCode);
         List<Inventory> listInventory = inventoryRepository.findBySkuCodeIn(skuCode);
-        List<InventoryResponse> responseList = listInventory.stream()
+        return listInventory.stream()
                 .map(inventory -> InventoryResponse.builder()
                         .skuCode(inventory.getSkuCode())
                         .isInStock(inventory.getQuantity() > 0)
                         .build())
                 .toList();
-        return responseList;
     }
 
     @Transactional
