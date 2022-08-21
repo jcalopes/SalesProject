@@ -22,7 +22,7 @@ Aware of it the API Gateway is protected using **OAuth 2.0** Standard relying on
 
 ### Quality Assurance Concepts:
 
-As the testing plays an important role to ensure that new integrations aren't actually previous features and grant that everything works as expected some **Integration Tests** were performed using JUnit and testContainers libraries to mock the databases used in "production".
+As the testing plays an important role to ensure that new integrations aren't actually breaking the previous features as well as ensuring that everything is working as expected some **Integration Tests** were performed using JUnit and testContainers libraries to mock the databases used in "production".
 
 ### CI/CD Concepts:
 
