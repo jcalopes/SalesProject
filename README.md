@@ -28,4 +28,8 @@ As the testing plays an important role to ensure that new integrations aren't ac
 
 Still not implemented but expecting more features soon such as Jenkins pipeline and kubernetes.
 
+## Distributed Tracing:
+In a production environment an application could receive thousands of request per shot periods so its important to implement mechanisms to trace the whole request lifecycle. So it's implemented using Sleuth and Zipkin for UI to help query the logs to make easier find out the root causes in abnormal scenarios.   
+
+
 **Stay tuned!**
