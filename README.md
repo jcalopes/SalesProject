@@ -17,7 +17,7 @@ Implements well-known design patterns regarding microservices ecosystem to build
 
 ### Security Concepts:
 
-Security is increasingly more demand today as "open doors" has been exploited by malicious actors every time. So implementing the best/latest security standards is a must when it comes building an application.
+Security is increasingly more in demand today as "open doors" are being exploited by malicious actors every time. So implementing the best/latest security standards is a must when it comes building an application.
 Aware of it the API Gateway is protected using **OAuth 2.0** Standard relying on KeyClouk Library granting access to the resources only by authorized users.
 
 ### Quality Assurance Concepts:
