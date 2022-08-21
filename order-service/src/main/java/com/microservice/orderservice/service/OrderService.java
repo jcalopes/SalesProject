@@ -40,7 +40,7 @@ public class OrderService {
                 .toList();
 
         //Call inventory service and place order if product is in stock
-        String uri = "http://localhost:8082/api/inventory";
+        String uri = "http://INVENTORY-SERVICE/api/inventory";
         UriComponents builder = UriComponentsBuilder.fromHttpUrl(uri)
                 .queryParam("skuCode", skuCodes).build();
 
