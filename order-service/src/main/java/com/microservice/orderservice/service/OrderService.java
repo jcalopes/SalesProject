@@ -23,7 +23,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final RestTemplate restTemplate;
 
-    public void placeOrder(OrderRequest orderRequest) {
+    public String placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
         order.setOrderNumber(order.getOrderNumber());
@@ -52,6 +52,7 @@ public class OrderService {
 
         if (allProductsInStock) {
             orderRepository.save(order);
+            return "Order ID:" + order.getOrderNumber() + " placed successfully.";
         } else {
             throw new IllegalArgumentException("Product is not in stock, please try again later!");
         }
