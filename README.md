@@ -17,7 +17,7 @@ Implements well-known design patterns regarding microservices ecosystem to build
 
 ### Event-Driven Concepts:
 
-There are some ways to comunicate between services and **Messaging Pattern** is one of them. Thus to comunicate with notification-service was implemented asyncronous comunication using a widely used message broker - **RabbitMQ**. Notification-service acts as a consumer having the order-service the producer on the other side.
+There are some ways to comunicate between services and **Messaging Pattern** is one of them. Thus to comunicate with notification-service was implemented asyncronous comunication using a widely used message broker - **Kafka**. Notification-service acts as a consumer having the order-service the producer on the other side.
 
 ### Security Concepts:
 
