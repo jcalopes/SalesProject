@@ -3,7 +3,7 @@
 **Microservice-based application to manage orders, products and underlying inventory.**
 
 ### Instalation
-Working on that.
+Work in progress.
 
 ## What to expect?
 
@@ -13,7 +13,11 @@ Implements well-known design patterns regarding microservices ecosystem to build
 
 - The **Service Discovery Pattern** implemented by Eureka Service Discovery as well as the LoadBalancer to forward together the incoming requests to the target host when multiple instances of the same service are running.
 - An **API Gateway Pattern** was also implemented placed in front of the microservices acting as the only entrypoint to the application. Tasks as authentication and forwarding are performed by the API preventing the requests hit directly in the microservices.
-- The **Circuit Breaker Pattern** was also implemented to prevent possible unavailable services make the application getting stuck and escalate the issues. Resilience4j was used to apply the pattern to foster the "Fail Fast" concept.
+- The **Circuit Breaker Pattern** was also implemented to prevent possible unavailable services make the application getting stuck and escalate the issues. Resilience4j was used to apply the pattern to apply the "Fail Fast" concept.
+
+### Event-Driven Concepts:
+
+There are some ways to comunicate between services and **Messaging Pattern** is one of them. Thus to comunicate with notification-service was implemented asyncronous comunication using a widely used message broker - **RabbitMQ**. Notification-service acts as a consumer having the order-service the producer on the other side.
 
 ### Security Concepts:
 
@@ -26,7 +30,7 @@ As the testing plays an important role to ensure that new integrations aren't ac
 
 ### CI/CD Concepts:
 
-Still not implemented but expecting more features soon such as Jenkins pipeline and kubernetes.
+Work in progress.
 
 ### Distributed Tracing:
 In a production environment an application could receive thousands of request per shot periods so its important to implement mechanisms to trace the whole request lifecycle. So it's implemented using Sleuth and Zipkin for UI to help query the logs to make easier find out the root causes in abnormal scenarios.   
