@@ -20,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("/api/order")
 public class OrderController {
     private final OrderService orderService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
