@@ -59,7 +59,7 @@ public class OrderService {
 
         if (allProductsInStock) {
             orderRepository.save(order);
-            sendKafkaMessage("order","Order Placed " +order.getId() + " successfully.");
+            sendKafkaMessage("order", "Order Placed " + order.getId() + " successfully.");
             return "Order ID:" + order.getOrderNumber() + " placed successfully.";
         } else {
             throw new IllegalArgumentException("Product is not in stock, please try again later!");
@@ -96,20 +96,18 @@ public class OrderService {
         return orderDto;
     }
 
-    private void sendKafkaMessage(String topic, String message){
+    private void sendKafkaMessage(String topic, String message) {
         ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, message);
         future.addCallback(new ListenableFutureCallback<>() {
 
             @Override
             public void onSuccess(SendResult<String, String> result) {
-                log.info("Sent message=[" + message +
-                        "] with offset=[" + result.getRecordMetadata().offset() + "]");
+                log.info("Sent message=[{}] with offset=[{}]", message, result.getRecordMetadata().offset());
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                log.error("Unable to send message=["
-                        + message + "] due to : " + ex.getMessage());
+                log.error("Unable to send message=[{}] due to : {}", message, ex.getMessage());
             }
         });
     }
