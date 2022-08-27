@@ -1,4 +1,4 @@
-package com.microservice.notificationservice.KafkaConsumerConfig;
+package com.microservice.notificationservice.kafkaConsumerConfig;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
