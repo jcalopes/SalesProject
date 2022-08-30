@@ -29,10 +29,8 @@ services:
       - "8083:8083"
     environment:
       EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-inventory/inventoryservicedb
     links:
       - discovery
-      - mysql-inventory
 
   notification:
     container_name: notification-service
@@ -80,15 +78,6 @@ services:
       MYSQL_DATABASE: orderservicedb
     ports:
       - "3306:3306"
-      - -
-  mysql-inventory:
-    container_name: mysql
-    image: mysql:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: my-secret-pw
-      MYSQL_DATABASE: orderservicedb
-    ports:
-      - "3307:3306"
 
   zookeeper:
     container_name: zookeeper-kafka
