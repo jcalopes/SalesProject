@@ -3,16 +3,16 @@ services:
   discovery:
     container_name: discovery-service
     build:
-      context: ./discovery-service
-      dockerfile: Dockerfile
+      context: ../discovery-service
+      dockerfile: ../discovery-service/Dockerfile
     ports:
       - "8761:8761"
 
   api-gateway:
     container_name: api-gateway
     build:
-      context: ./api-gateway
-      dockerfile: Dockerfile
+      context: ../api-gateway
+      dockerfile: ../api-gateway/Dockerfile
     ports:
       - "8084:8084"
     environment:
@@ -23,8 +23,8 @@ services:
   inventory:
     container_name: inventory-service
     build:
-      context: ./inventory-service
-      dockerfile: Dockerfile
+      context: ../inventory-service
+      dockerfile: ../inventory-service/Dockerfile
     ports:
       - "8083:8083"
     environment:
@@ -35,8 +35,8 @@ services:
   notification:
     container_name: notification-service
     build:
-      context: ./notification-service
-      dockerfile: Dockerfile
+      context: ../notification-service
+      dockerfile: ../notification-service/Dockerfile
     ports:
       - "8085:8085"
     environment:
@@ -47,13 +47,13 @@ services:
   order:
     container_name: order-service
     build:
-      context: ./order-service
+      context: ../order-service
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     environment:
       EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-order/inventoryservicedb
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-order/orderservicedb
     links:
       - discovery
       - mysql-order
@@ -61,8 +61,8 @@ services:
   product:
     container_name: product-service
     build:
-      context: ./product-service
-      dockerfile: Dockerfile
+      context: ../product-service
+      dockerfile: ../product-service/Dockerfile
     ports:
       - "8081:8081"
     environment:
