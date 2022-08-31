@@ -20,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,13 +39,13 @@ public class OrderService {
         List<OrderLineItems> listItems = orderRequest.getOrderLineItemsDtoList()
                 .stream()
                 .map(this::mapToOrderLineItems)
-                .toList();
+                .collect(Collectors.toList());
         order.setOrderLineItemsList(listItems);
 
         List<String> skuCodes = order.getOrderLineItemsList()
                 .stream()
                 .map(OrderLineItems::getSkuCode)
-                .toList();
+                .collect(Collectors.toList());
 
         //Call inventory service and place order if product is in stock
         String uri = "http://INVENTORY-SERVICE/api/inventory";
@@ -68,7 +69,7 @@ public class OrderService {
 
     public List<OrderDto> getOrders() {
         List<Order> orders = orderRepository.findAll();
-        return orders.stream().map(this::mapToOrderDto).toList();
+        return orders.stream().map(this::mapToOrderDto).collect(Collectors.toList());
     }
 
     private OrderLineItems mapToOrderLineItems(OrderLineItemsDto orderItemDto) {
@@ -92,7 +93,8 @@ public class OrderService {
     private OrderDto mapToOrderDto(Order order) {
         OrderDto orderDto = new OrderDto();
         orderDto.setOrderNumber(order.getOrderNumber());
-        orderDto.setOrderLineItemsList(order.getOrderLineItemsList().stream().map(this::mapToOrderLineItemsDto).toList());
+        orderDto.setOrderLineItemsList(order.getOrderLineItemsList().stream().map(this::mapToOrderLineItemsDto)
+                .collect(Collectors.toList()));
         return orderDto;
     }
 
