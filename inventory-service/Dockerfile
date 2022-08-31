@@ -1,4 +1,4 @@
-FROM openjdk:19-jdk-alpine
+FROM openjdk:11
 MAINTAINER Joao Lopes <lopes.joao.ca@gmail.com>
 ADD target/inventory-service.jar inventory-service.jar
 EXPOSE 8083
