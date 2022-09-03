@@ -34,7 +34,7 @@ pipeline {
         }
         stage('Push Image') {
             steps {
-                sh 'docker push lopes/api-gateway:latest'
+                sh 'docker push lopesdev/api-gateway:latest'
             }
         }
         post {
