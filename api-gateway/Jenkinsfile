@@ -37,10 +37,10 @@ pipeline {
                 sh 'docker push lopesdev/api-gateway:latest'
             }
         }
+	}
         post {
             always {
                 sh 'docker logout'
             }
         }
-	}
 }
