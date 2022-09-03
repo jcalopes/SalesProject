@@ -12,16 +12,6 @@ pipeline {
                 sh "mvn test -pl /api-gateway"
             }
         }
-        stage('Package') {
-            steps {
-                sh "mvn package -pl /api-gateway"
-            }
-            post {
-                success {
-                    archiveArtifacts artifacts: "api-gateway/target/*.jar", fingerprint: true
-                }
-            }
-        }
         stage('Build Image') {
                 steps {
                     sh 'docker build -t lopesdev/api-gateway:latest .'
