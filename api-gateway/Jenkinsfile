@@ -12,35 +12,30 @@ pipeline {
                 sh "mvn test -pl /api-gateway"
             }
         }
-        stage('Package') {
-            steps {
-                sh "mvn package -pl /api-gateway"
-            }
-            post {
-                success {
-                    archiveArtifacts artifacts: "api-gateway/target/*.jar", fingerprint: true
-                }
-            }
-        }
         stage('Build Image') {
                 steps {
-                    sh 'docker build -t lopesdev/api-gateway:latest .'
+                    sh 'docker build -t lopesdev/api-gateway:latest api-gateway'
                 }
         }
         stage('DockerHub Login') {
+                environment {
+                    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+                }
             steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
         stage('Push Image') {
             steps {
-                sh 'docker push lopes/api-gateway:latest'
-            }
-        }
-        post {
-            always {
-                sh 'docker logout'
+                sh 'docker push lopesdev/api-gateway:latest'
             }
         }
 	}
+        post {
+            always {
+                sh 'docker logout'
+                cleanWs()
+                sh 'docker rmi lopesdev/api-gateway:latest'
+            }
+        }
 }
