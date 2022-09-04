@@ -1,9 +1,12 @@
-# SalesProject
-
 **Microservice-based application to manage orders, products and underlying inventory.**
 
-### Instalation
-Working on that.
+### Installation (2 Ways)
+1) For run the application properly you can run each microservice independently and configure a Mysqlserver for order-service and also a use Mongo Atlas or a Mongo locally for inventory-service and product-service to ensure data persistence.
+   You will also need to have a Kafka Server running and mention it in notification-service properties and in order-service as well.
+
+2) Use Mongo Atlas or a Mongo locally for inventory-service and product-service and run command below:
+
+                        docker compose up Deployment/docker-compose.yml
 
 ## What to expect?
 
@@ -26,6 +29,13 @@ As the testing plays an important role to ensure that new integrations aren't ac
 
 ### CI/CD Concepts:
 
-Still not implemented but expecting more features soon such as Jenkins pipeline and kubernetes.
+In microservices architecture each microservice should be managed independently. Thus, each microservice have configured a Jenkins pipeline to automate some tasks and ensuring that a new integration will not compromise the current codebase.
+The pipeline performs a set of stages as build, test, deploy to grant continuous integration and continuous deployment as well. Once the pipeline runs successfully which means that a new integration passes the previous tests and also the tests that eventually were designed during the commit and new image has been updated in docker hub repository.
+The CI/CD is the main concept behind DevOps and make the development process smoother and more reliable.
+
+### Communication styles adopted:
+In microservices architecture implies that exist some communication between the services. This communication could happen in two different paradigms: asynchronous and synchronous.
+Synchronous can be useful in some scenarios for its simplicity however we have to keep in mind that the user experience could be affected as the sender have blocked waiting for the response thus we need both parts available to happen the communication. To prevent issues in this situation we implemented aforementioned pattern - Circuit Breaker.
+On the other hand we have asynchronous communication which it's widely used nowadays. This kind of communication means that the sender sends a message to the recipient and continues doing other work without being blocked waiting for the response. We use Kafka which uses asynchronous communication to send messages from the order-service to notification-service.
 
 **Stay tuned!**
