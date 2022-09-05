@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service-deployment
+  labels: 
+    app: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service 
+          image: lopesdev/order-service
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef: 
+                  name: mysql-secret
+                  value: mysql-db-username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef: 
+                  name: mysql-secret
+                  value: mysql-db-password
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef: 
+                  name: mysql-configmap
+                  value: mysql-db-url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  selector:
+    app: order-service
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+      nodePort: 30001
