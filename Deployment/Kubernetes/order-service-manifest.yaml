@@ -35,6 +35,11 @@ spec:
                 configMapKeyRef: 
                   name: mysql-configmap
                   value: mysql-db-url
+            - name: INVENTORY-URL
+              valueFrom:
+                configMapKeyRef: 
+                  name: order-configmap
+                  value: inventory-url
 ---
 apiVersion: v1
 kind: Service
