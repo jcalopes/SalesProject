@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service-deployment
+  labels: 
+    app: notification-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service 
+          image: lopesdev/notification-service
+          ports:
+            - containerPort: 8085
+          env:
+            - name: KAFKA_SERVER
+              valueFrom:
+                configMapKeyRef: 
+                  name: order-configmap
+                  value: kafka-url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+spec:
+  selector:
+    app: notification-service
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 85
+      targetPort: 8085
