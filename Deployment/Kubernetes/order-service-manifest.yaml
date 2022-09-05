@@ -40,6 +40,11 @@ spec:
                 configMapKeyRef: 
                   name: order-configmap
                   value: inventory-url
+            - name: KAFKA_SERVER
+              valueFrom:
+                configMapKeyRef: 
+                  name: order-configmap
+                  value: kafka-url
 ---
 apiVersion: v1
 kind: Service
