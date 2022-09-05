@@ -6,6 +6,7 @@ import com.microservice.orderservice.model.OrderLineItems;
 import com.microservice.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -30,6 +31,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final RestTemplate restTemplate;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    @Value("${inventory.url}")
+    String uri;
 
     public String placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
@@ -48,7 +51,6 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         //Call inventory service and place order if product is in stock
-        String uri = "http://INVENTORY-SERVICE/api/inventory";
         UriComponents builder = UriComponentsBuilder.fromHttpUrl(uri)
                 .queryParam("skuCode", skuCodes).build();
 
