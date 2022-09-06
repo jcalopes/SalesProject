@@ -24,7 +24,7 @@ spec:
               valueFrom:
                 configMapKeyRef: 
                   name: order-configmap
-                  value: kafka-url
+                  key: kafka-url
 ---
 apiVersion: v1
 kind: Service

@@ -27,8 +27,9 @@ metadata:
 spec:
   selector:
     app: inventory-service
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 81
       targetPort: 8083
+      nodePort: 30003
