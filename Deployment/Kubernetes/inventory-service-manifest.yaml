@@ -19,6 +19,9 @@ spec:
           image: lopesdev/inventory-service
           ports:
             - containerPort: 8083
+          env:
+            - name: DISCOVERY_HOST
+              value: discovery-service
 ---
 apiVersion: v1
 kind: Service

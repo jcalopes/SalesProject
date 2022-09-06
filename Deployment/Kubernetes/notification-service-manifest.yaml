@@ -25,6 +25,8 @@ spec:
                 configMapKeyRef: 
                   name: order-configmap
                   key: kafka-url
+            - name: DISCOVERY_HOST
+              value: discovery-service
 ---
 apiVersion: v1
 kind: Service
