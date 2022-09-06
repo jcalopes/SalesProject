@@ -1,44 +1,68 @@
-apiVersion: apps/v1
+apiVersion: v1 # Defining PVC for Mysql Storage, dynamically provisioned by cluster
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+  labels:
+    app: mysql
+    tier: database
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1 #Deployment for mysql server
 kind: Deployment
 metadata:
-  name: mysqldb-deployment
+  name: mysql
   labels: 
-    app: mysqldb
+    app: mysql
+    tier: database
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysqldb
+      app: mysql
+      tier: database
+  strategy:
+    type: Recreate
   template:
     metadata:
-      labels:
-        app: mysqldb
+      labels: # Must match with deployment and service selectors
+        app: mysql
+        tier: database
     spec:
       containers:
-        - name: mysqldb
-          image: mysql
+        - name: mysql
+          image: mysql:5.7
+          args:
+            - "--ignore-db-dir=lost+found" #Workaround for mysql issue
           ports:
             - containerPort: 3306
+              name: mysql
           env:
             - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef: 
-                  name: mysql-secret
-                  value: mysql-db-url
+              value: my-secret-pw
             - name: MYSQL_DATABASE
-              valueFrom:
-                configMapKeyRef: 
-                  name: mysql-configmap
-                  value: mysql-db-url
+              value: orderservicedb
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql #This is the path i the container where the mounting will take place
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-service
+  name: mysql #DNS Name
 spec:
   selector:
-    app: mysqldb
+    app: mysql
+    tier: database
   ports:
-    - protocol: TCP
-      port: 80
+    - port: 3306
       targetPort: 3306
+  clusterIP: None #We use DNS thus ClusterIP is not relevant

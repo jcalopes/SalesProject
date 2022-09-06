@@ -20,31 +20,22 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef: 
-                  name: mysql-secret
-                  value: mysql-db-username
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef: 
-                  name: mysql-secret
-                  value: mysql-db-password
-            - name: SPRING_DATASOURCE_URL
-              valueFrom:
-                configMapKeyRef: 
-                  name: mysql-configmap
-                  value: mysql-db-url
+            - name: DB_USERNAME
+              value: "root"
+            - name: DB_PASSWORD
+              value: "my-secret-pw"
+            - name: DB_HOST
+              value: mysql
             - name: INVENTORY-URL
               valueFrom:
                 configMapKeyRef: 
                   name: order-configmap
-                  value: inventory-url
+                  key: inventory-url
             - name: KAFKA_SERVER
               valueFrom:
                 configMapKeyRef: 
                   name: order-configmap
-                  value: kafka-url
+                  key: kafka-url
 ---
 apiVersion: v1
 kind: Service
