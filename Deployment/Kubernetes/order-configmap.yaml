@@ -5,3 +5,4 @@ metadata:
 data:
   inventory-url: inventory-service
   kafka-url: kafka-service
+  db-host: mysql

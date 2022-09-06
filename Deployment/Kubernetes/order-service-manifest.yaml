@@ -25,7 +25,10 @@ spec:
             - name: DB_PASSWORD
               value: "my-secret-pw"
             - name: DB_HOST
-              value: mysql
+              valueFrom:
+                configMapKeyRef:
+                  name: order-configmap
+                  key: db-host
             - name: INVENTORY-URL
               valueFrom:
                 configMapKeyRef: 
@@ -36,6 +39,8 @@ spec:
                 configMapKeyRef: 
                   name: order-configmap
                   key: kafka-url
+            - name: DISCOVERY_HOST
+              value: discovery-service
 ---
 apiVersion: v1
 kind: Service
