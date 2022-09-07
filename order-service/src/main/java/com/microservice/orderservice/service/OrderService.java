@@ -51,7 +51,7 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         //Call inventory service and place order if product is in stock
-        UriComponents builder = UriComponentsBuilder.fromHttpUrl(uri + "/api/inventory")
+        UriComponents builder = UriComponentsBuilder.fromHttpUrl(uri + "api/inventory")
                 .queryParam("skuCode", skuCodes).build();
 
         ResponseEntity<InventoryResponse[]> inventoryResponse = restTemplate
