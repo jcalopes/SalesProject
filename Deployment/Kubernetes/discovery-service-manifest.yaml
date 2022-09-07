@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: discovery-service-deployment
+  name: discovery
   labels:
-    app: discovery-service
+    app: discovery
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: discovery-service
+      app: discovery
   template:
     metadata:
       labels:
-        app: discovery-service
+        app: discovery
     spec:
       containers:
-        - name: discovery-service
+        - name: discovery
           image: lopesdev/discovery-service
           ports:
             - containerPort: 8761
@@ -23,13 +23,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: discovery-service
+  name: discovery
 spec:
   selector:
-    app: discovery-service
-  type: LoadBalancer
+    app: discovery
+  type: ClusterIP
   ports:
     - protocol: TCP
       port: 8761
       targetPort: 8761
-      nodePort: 30005

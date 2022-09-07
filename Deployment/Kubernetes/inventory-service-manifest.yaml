@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: inventory-service-deployment
+  name: inventory-service
   labels: 
     app: inventory-service
 spec:
@@ -33,6 +33,6 @@ spec:
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 81
+      port: 8083
       targetPort: 8083
       nodePort: 30003
