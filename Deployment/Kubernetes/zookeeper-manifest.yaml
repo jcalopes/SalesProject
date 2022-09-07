@@ -1,33 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: zookeeper-deployment
-  labels: 
+  labels:
     app: zookeeper
+  name: zookeeper
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: zookeeper
+  strategy: {}
   template:
     metadata:
       labels:
         app: zookeeper
     spec:
       containers:
-        - name: zookeeper-kafka
-          image: wurstmeister/zookeeper
-          ports:
-            - containerPort: 2181
+        - image: wurstmeister/zookeeper
+          name: zookeeper
+          resources: {}
+      restartPolicy: Always
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: zookeeper-service
-spec:
-  selector:
+  labels:
     app: zookeeper
+  name: zookeeper
+spec:
   ports:
-    - protocol: TCP
+    - name: "client"
       port: 2181
       targetPort: 2181
+  selector:
+    app: zookeeper

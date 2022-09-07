@@ -4,5 +4,5 @@ metadata:
   name: order-configmap
 data:
   inventory-url: inventory-service
-  kafka-url: kafka-service
+  kafka-url: kafka-cluster
   db-host: mysql

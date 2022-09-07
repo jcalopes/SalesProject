@@ -38,5 +38,5 @@ spec:
   type: ClusterIP
   ports:
     - protocol: TCP
-      port: 85
+      port: 8085
       targetPort: 8085

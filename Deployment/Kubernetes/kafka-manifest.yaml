@@ -1,42 +1,70 @@
+apiVersion: v1 # Defining PVC for Mysql Storage, dynamically provisioned by cluster
+kind: PersistentVolumeClaim
+metadata:
+  name: kafka-pv-claim
+  labels:
+    app: kafka-cluster
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka-service-deployment
-  labels: 
-    app: kafka-service
+  labels:
+    app: kafka-cluster
+  name: kafka-cluster
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kafka-service
+      app: kafka-cluster
+  strategy: {}
   template:
     metadata:
       labels:
-        app: kafka-service
+        app: kafka-cluster
     spec:
       containers:
-        - name: kafka-service 
-          image: wurstmeister/kafka
-          ports:
-            - containerPort: 9092
+        - image: wurstmeister/kafka
+          name: kafka
           env:
             - name: KAFKA_ADVERTISED_HOST_NAME
-              value: "127.0.0.1"
-            - name: KAFKA_ADVERTISED_PORT
-              value: "9092"
+              value: kafka-cluster
             - name: KAFKA_ZOOKEEPER_CONNECT
-              value: zookeeper-service
+              value: zookeeper:2181
+            - name: KAFKA_BROKER_ID
+              value: "500"
+            - name: KAFKA_PORT
+              value: "9092"
+          ports:
+            - containerPort: 9092
+          volumeMounts:
+            - name: kafka-persistent-storage
+              mountPath: /var/lib/kafka #This is the path i the container where the mounting will take place
+      volumes:
+        - name: kafka-persistent-storage
+          persistentVolumeClaim:
+            claimName: kafka-pv-claim
+      restartPolicy: Always
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka-service
+  labels:
+    app: kafka-cluster
+  name: kafka-cluster
 spec:
-  selector:
-    app: kafka-service
-  type: ClusterIP
+  type: NodePort
   ports:
-    - protocol: TCP
-      port: 84
+    - name: "9092"
+      port: 9092
       targetPort: 9092
-
+      nodePort: 31006
+  selector:
+    app: kafka-cluster
+status:
+  loadBalancer: {}
