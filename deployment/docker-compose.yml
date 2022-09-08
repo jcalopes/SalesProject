@@ -1,4 +1,7 @@
 version: '3.5'
+volumes:
+  prometheus_data:
+
 services:
   discovery:
     container_name: discovery-service
@@ -102,4 +105,13 @@ services:
     image: openzipkin/zipkin:latest
     ports:
       - "9411:9411"
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    volumes:
+      - ./deployment/config:/etc/prometheus/prometheus
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
 
