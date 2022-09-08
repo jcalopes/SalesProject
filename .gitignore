@@ -1,2 +1,2 @@
 .idea
-deployment/Kubernetes/mysql-secret.yaml
+deployment/kubernetes/mysql-secret.yaml

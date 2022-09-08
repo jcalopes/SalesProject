@@ -110,8 +110,9 @@ services:
     container_name: prometheus
     image: prom/prometheus:latest
     volumes:
-      - ./deployment/config:/etc/prometheus/prometheus
+      - ./prometheus:/etc/prometheus
       - prometheus_data:/prometheus
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
 
