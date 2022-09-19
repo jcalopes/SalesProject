@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 public class WebClientConfig {
 
     @Bean
-    @LoadBalanced //Client Side Load Balancer
+    //@LoadBalanced //Client Side Load Balancer
     public RestTemplate restTemplate(){
         return new RestTemplate();
     }

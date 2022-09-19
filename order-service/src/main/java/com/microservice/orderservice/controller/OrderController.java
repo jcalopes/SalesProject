@@ -23,12 +23,13 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
-    @TimeLimiter(name = "inventory")
-    @Retry(name = "inventory")
-    public CompletableFuture<String> placeOrder(@RequestBody OrderRequest orderRequest){
+    //@CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
+    //@TimeLimiter(name = "inventory")
+    //@Retry(name = "inventory")
+    public String placeOrder(@RequestBody OrderRequest orderRequest){
         log.info("POST: Called Order Service.");
-        return CompletableFuture.supplyAsync(()-> orderService.placeOrder(orderRequest));
+        //return CompletableFuture.supplyAsync(()-> orderService.placeOrder(orderRequest));
+        return orderService.placeOrder(orderRequest);
     }
 
     @GetMapping

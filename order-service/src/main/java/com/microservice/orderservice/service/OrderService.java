@@ -35,6 +35,7 @@ public class OrderService {
     String uri;
 
     public String placeOrder(OrderRequest orderRequest) {
+        log.info("OrderService placing an order...");
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
         order.setOrderNumber(order.getOrderNumber());
@@ -59,12 +60,14 @@ public class OrderService {
         ResponseEntity<InventoryResponse[]> inventoryResponse = restTemplate
                 .getForEntity(builder.toUriString(), InventoryResponse[].class);
 
+        log.info("Response from inventory {}",inventoryResponse.toString());
+
         boolean allProductsInStock = Arrays.stream(inventoryResponse.getBody())
                 .allMatch(InventoryResponse::isInStock);
 
         if (allProductsInStock) {
             orderRepository.save(order);
-            sendKafkaMessage("order", "Order Placed " + order.getId() + " successfully.");
+            //sendKafkaMessage("order", "Order Placed " + order.getId() + " successfully.");
             return "Order ID:" + order.getOrderNumber() + " placed successfully.";
         } else {
             throw new IllegalArgumentException("Product is not in stock, please try again later!");

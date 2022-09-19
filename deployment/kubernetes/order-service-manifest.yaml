@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: order-service 
-          image: lopesdev/order-service
-          imagePullPolicy: Always
+          image: order-service
+          imagePullPolicy: Never
           ports:
             - containerPort: 8080
           env:
@@ -30,15 +30,13 @@ spec:
                 configMapKeyRef:
                   name: order-configmap
                   key: db-host
-            - name: INVENTORY_URL
+            - name: INVENTORY_HOST
               value: inventory-service
             - name: KAFKA_SERVER
               valueFrom:
                 configMapKeyRef: 
                   name: order-configmap
                   key: kafka-url
-            - name: DISCOVERY_HOST
-              value: discovery
 ---
 apiVersion: v1
 kind: Service
@@ -47,7 +45,7 @@ metadata:
 spec:
   selector:
     app: order-service
-  type: LoadBalancer
+  type: NodePort
   ports:
     - protocol: TCP
       port: 80

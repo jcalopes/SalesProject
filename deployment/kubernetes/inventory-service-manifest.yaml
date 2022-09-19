@@ -16,12 +16,10 @@ spec:
     spec:
       containers:
         - name: inventory-service 
-          image: lopesdev/inventory-service
+          image: inventory-service
+          imagePullPolicy: Never
           ports:
             - containerPort: 8083
-          env:
-            - name: DISCOVERY_HOST
-              value: discovery-service
 ---
 apiVersion: v1
 kind: Service
@@ -30,8 +28,9 @@ metadata:
 spec:
   selector:
     app: inventory-service
-  type: ClusterIP
+  type: NodePort
   ports:
     - protocol: TCP
-      port: 8083
+      port: 80
       targetPort: 8083
+      nodePort: 30005
