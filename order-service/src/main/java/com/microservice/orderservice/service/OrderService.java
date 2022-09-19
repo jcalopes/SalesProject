@@ -54,6 +54,8 @@ public class OrderService {
         UriComponents builder = UriComponentsBuilder.fromHttpUrl(uri + "/api/inventory")
                 .queryParam("skuCode", skuCodes).build();
 
+        log.info("Call for {}",builder.toUriString());
+
         ResponseEntity<InventoryResponse[]> inventoryResponse = restTemplate
                 .getForEntity(builder.toUriString(), InventoryResponse[].class);
 

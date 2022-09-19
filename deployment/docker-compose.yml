@@ -1,6 +1,7 @@
 version: '3.5'
 volumes:
   prometheus_data:
+  grafana_data:
 
 services:
   discovery:
@@ -115,4 +116,10 @@ services:
     command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000
 
