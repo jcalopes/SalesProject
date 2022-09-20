@@ -6,3 +6,4 @@ resources:
   - mysql-manifest.yaml
   - order-configmap.yaml
   - order-service-manifest.yaml
+  - notification-service-manifest.yaml

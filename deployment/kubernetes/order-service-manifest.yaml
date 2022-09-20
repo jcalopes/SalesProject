@@ -6,6 +6,7 @@ metadata:
     app: order-service
 spec:
   replicas: 1
+  revisionHistoryLimit: 0
   selector:
     matchLabels:
       app: order-service
@@ -32,11 +33,6 @@ spec:
                   key: db-host
             - name: INVENTORY_HOST
               value: inventory-service
-            - name: KAFKA_SERVER
-              valueFrom:
-                configMapKeyRef: 
-                  name: order-configmap
-                  key: kafka-url
 ---
 apiVersion: v1
 kind: Service

@@ -6,6 +6,7 @@ metadata:
     app: notification-service
 spec:
   replicas: 1
+  revisionHistoryLimit: 0
   selector:
     matchLabels:
       app: notification-service
@@ -16,17 +17,13 @@ spec:
     spec:
       containers:
         - name: notification-service 
-          image: lopesdev/notification-service
+          image: notification-service
+          imagePullPolicy: Never
           ports:
-            - containerPort: 8085
+            - containerPort: 8080
           env:
             - name: KAFKA_SERVER
-              valueFrom:
-                configMapKeyRef: 
-                  name: order-configmap
-                  key: kafka-url
-            - name: DISCOVERY_HOST
-              value: discovery-service
+              value: kafka-cluster
 ---
 apiVersion: v1
 kind: Service
@@ -38,5 +35,5 @@ spec:
   type: ClusterIP
   ports:
     - protocol: TCP
-      port: 8085
-      targetPort: 8085
+      port: 80
+      targetPort: 8080
