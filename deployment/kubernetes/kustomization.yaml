@@ -3,8 +3,11 @@ kind: Kustomization
 
 resources:
   - inventory-service-manifest.yaml
-  - queue-manifest.yaml
+  - rabbitmq-manifest.yaml
   - mysql-manifest.yaml
   - order-configmap.yaml
   - order-service-manifest.yaml
   - notification-service-manifest.yaml
+  - rbac.yaml
+  - prometheus-manifest.yaml
+  - grafana-manifest.yaml
