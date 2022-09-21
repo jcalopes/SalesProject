@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - inventory-service-manifest.yaml
+  - queue-manifest.yaml
   - mysql-manifest.yaml
   - order-configmap.yaml
   - order-service-manifest.yaml

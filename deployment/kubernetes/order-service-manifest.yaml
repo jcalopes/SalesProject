@@ -33,6 +33,8 @@ spec:
                   key: db-host
             - name: INVENTORY_HOST
               value: inventory-service
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq-service
 ---
 apiVersion: v1
 kind: Service
