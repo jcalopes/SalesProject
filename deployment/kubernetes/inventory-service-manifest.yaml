@@ -6,6 +6,7 @@ metadata:
     app: inventory-service
 spec:
   replicas: 1
+  revisionHistoryLimit: 0
   selector:
     matchLabels:
       app: inventory-service
@@ -16,22 +17,25 @@ spec:
     spec:
       containers:
         - name: inventory-service 
-          image: lopesdev/inventory-service
+          image: inventory-service
+          imagePullPolicy: Never
           ports:
             - containerPort: 8083
-          env:
-            - name: DISCOVERY_HOST
-              value: discovery-service
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: inventory-service
+  annotations:
+    prometheus.io/path: "/actuator/prometheus"
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8083"
 spec:
   selector:
     app: inventory-service
-  type: ClusterIP
+  type: NodePort
   ports:
     - protocol: TCP
-      port: 8083
+      port: 80
       targetPort: 8083
+      nodePort: 30005

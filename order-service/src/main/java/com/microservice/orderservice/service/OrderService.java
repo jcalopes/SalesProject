@@ -6,14 +6,11 @@ import com.microservice.orderservice.model.OrderLineItems;
 import com.microservice.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,11 +27,12 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final RestTemplate restTemplate;
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final RabbitTemplate rabbitTemplate;
     @Value("${inventory.url}")
     String uri;
 
     public String placeOrder(OrderRequest orderRequest) {
+        log.info("OrderService placing an order...");
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
         order.setOrderNumber(order.getOrderNumber());
@@ -54,15 +52,19 @@ public class OrderService {
         UriComponents builder = UriComponentsBuilder.fromHttpUrl(uri + "/api/inventory")
                 .queryParam("skuCode", skuCodes).build();
 
+        log.info("Call for {}",builder.toUriString());
+
         ResponseEntity<InventoryResponse[]> inventoryResponse = restTemplate
                 .getForEntity(builder.toUriString(), InventoryResponse[].class);
+
+        log.info("Response from inventory {}", inventoryResponse);
 
         boolean allProductsInStock = Arrays.stream(inventoryResponse.getBody())
                 .allMatch(InventoryResponse::isInStock);
 
         if (allProductsInStock) {
             orderRepository.save(order);
-            sendKafkaMessage("order", "Order Placed " + order.getId() + " successfully.");
+            convertAndSendToQueue("Order ID: " + order.getOrderNumber() + " placed successfully." );
             return "Order ID:" + order.getOrderNumber() + " placed successfully.";
         } else {
             throw new IllegalArgumentException("Product is not in stock, please try again later!");
@@ -100,19 +102,11 @@ public class OrderService {
         return orderDto;
     }
 
-    private void sendKafkaMessage(String topic, String message) {
-        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, message);
-        future.addCallback(new ListenableFutureCallback<>() {
-
-            @Override
-            public void onSuccess(SendResult<String, String> result) {
-                log.info("Sent message=[{}] with offset=[{}]", message, result.getRecordMetadata().offset());
-            }
-
-            @Override
-            public void onFailure(Throwable ex) {
-                log.error("Unable to send message=[{}] due to : {}", message, ex.getMessage());
-            }
-        });
+    private void convertAndSendToQueue(String message){
+        rabbitTemplate.convertAndSend("fanout.exchange", "", "fanout" + message);
+        rabbitTemplate.convertAndSend("topicExchangeName", "*.important.*",
+                "topic important warn" + message);
+        rabbitTemplate.convertAndSend("topicExchangeName", "#.error",
+                "topic important error" + message);
     }
 }

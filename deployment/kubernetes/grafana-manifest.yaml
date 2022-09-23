@@ -1,0 +1,57 @@
+apiVersion: v1 # Defining PVC for Mysql Storage, dynamically provisioned by cluster
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pv-claim
+  labels:
+    app: grafana
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-deployment
+  labels:
+    app: grafana
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:latest
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: grafana-persistent-storage
+              mountPath: /var/lib/grafana
+      volumes:
+        - name: grafana-persistent-storage
+          persistentVolumeClaim:
+            claimName: grafana-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  selector:
+    app: grafana
+  type: NodePort
+  ports:
+    - name: grafanaui
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 31345

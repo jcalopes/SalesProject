@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - inventory-service-manifest.yaml
+  - rabbitmq-manifest.yaml
+  - mysql-manifest.yaml
+  - order-configmap.yaml
+  - order-service-manifest.yaml
+  - notification-service-manifest.yaml
+  - rbac.yaml
+  - prometheus-manifest.yaml
+  - grafana-manifest.yaml
