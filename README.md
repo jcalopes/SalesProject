@@ -19,7 +19,7 @@ Implements well-known design patterns regarding microservices ecosystem to build
 - The **Circuit Breaker Pattern** was also implemented to prevent possible unavailable services make the application getting stuck and escalate the issues. **Resilience4j** was used to apply the pattern to apply the "Fail Fast" concept.
 
 ### Event-Driven Concepts:
-There are some ways to communicate between services and **Messaging Pattern** is one of them. Thus to comunicate with notification-service was implemented asynchronous communication using a widely used message broker - **Kafka**. Notification-service acts as a consumer having the order-service the producer on the other side.
+There are some ways to communicate between services and **Messaging Pattern** is one of them. Thus to comunicate with notification-service was implemented asynchronous communication using a widely used message queue - **RabbitMQ**. Notification-service acts as a consumer having the order-service the producer on the other side.
 
 ### Security Concepts:
 Security is increasingly more in demand today as "open doors" are being exploited by malicious actors every time. So implementing the best/latest security standards is a must when it comes building an application.
