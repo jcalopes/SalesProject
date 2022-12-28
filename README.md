@@ -1,12 +1,16 @@
 **Microservice-based application to manage orders, products and underlying inventory.**
 
-### Installation (2 Ways)
-1) For run the application properly you can run each microservice independently and configure a Mysqlserver for order-service and also a use Mongo Atlas or a Mongo locally for inventory-service and product-service to ensure data persistence.
-   You will also need to have a **Kafka Server** running and mention it in notification-service properties and in order-service as well.
+### Installation 
 
-2) Use **Mongo Atlas** or a Mongo locally for inventory-service and product-service and run command below:
+1) Install Kubernetes locally or you can enable it with your docker desktop.
 
-                        docker compose up Deployment/docker-compose.yml
+2) Clone this project
+
+3) cd deployments/kubernetes
+
+2) Under the aforemention folder execute the following command to deploy all files in your local cluster:
+
+                        kubectl apply -k Kustomization.yaml
 
 ## What to expect?
 
