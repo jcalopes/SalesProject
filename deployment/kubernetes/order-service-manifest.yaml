@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service-deployment
+  labels: 
+    app: order-service
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service 
+          image: order-service
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_USERNAME
+              value: "root"
+            - name: DB_PASSWORD
+              value: "my-secret-pw"
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: order-configmap
+                  key: db-host
+            - name: INVENTORY_HOST
+              value: inventory-service
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+  annotations:
+    prometheus.io/path: "/actuator/prometheus"
+    prometheus.io/port: "8080"
+    prometheus.io/scrape: "true"
+spec:
+  selector:
+    app: order-service
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+      nodePort: 30001

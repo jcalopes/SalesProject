@@ -1,0 +1,118 @@
+version: '3.5'
+volumes:
+  prometheus_data:
+  grafana_data:
+
+services:
+  discovery:
+    container_name: discovery-service
+    build:
+      context: ../discovery-service
+      dockerfile: ../discovery-service/Dockerfile
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: ../api-gateway
+      dockerfile: ../api-gateway/Dockerfile
+    ports:
+      - "8084:8084"
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://discovery:8761/eureka
+    links:
+      - discovery
+
+  inventory:
+    container_name: inventory-service
+    build:
+      context: ../inventory-service
+      dockerfile: ../inventory-service/Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://discovery:8761/eureka
+    links:
+      - discovery
+
+  notification:
+    container_name: notification-service
+    build:
+      context: ../notification-service
+      dockerfile: ../notification-service/Dockerfile
+    ports:
+      - "8085:8085"
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_RABBITMQ_HOST: rabbitmq
+    links:
+      - discovery
+      - rabbitmq
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  order:
+    container_name: order-service
+    build:
+      context: ../order-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-order/orderservicedb
+      SPRING_RABBITMQ_HOST: rabbitmq
+    links:
+      - discovery
+      - mysql-order
+      - rabbitmq
+
+  product:
+    container_name: product-service
+    build:
+      context: ../product-service
+      dockerfile: ../product-service/Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://discovery:8761/eureka
+    links:
+      - discovery
+
+  mysql-order:
+    container_name: mysql
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: orderservicedb
+    ports:
+      - "3306:3306"
+
+  zipkin-service:
+    container_name: zipkin-service
+    image: openzipkin/zipkin:latest
+    ports:
+      - "9411:9411"
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000
+

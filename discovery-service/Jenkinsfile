@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clean') {
+            steps {
+                sh "mvn clean install -pl /discovery-service"
+            }
+        }
+        stage('Test') {
+            steps {
+                sh "mvn test -pl /discovery-service"
+            }
+        }
+        stage('Build Image') {
+                steps {
+                    sh 'docker build -t lopesdev/discovery-service:latest discovery-service'
+                }
+        }
+        stage('DockerHub Login') {
+                environment {
+                    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+                }
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
+        }
+        stage('Push Image') {
+            steps {
+                sh 'docker push lopesdev/discovery-service:latest'
+            }
+        }
+	}
+        post {
+            always {
+                sh 'docker logout'
+                cleanWs()
+                sh 'docker rmi lopesdev/discovery-service:latest'
+            }
+        }
+}

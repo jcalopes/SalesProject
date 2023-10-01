@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clean') {
+            steps {
+                sh "mvn clean install -pl /api-gateway"
+            }
+        }
+        stage('Test') {
+            steps {
+                sh "mvn test -pl /api-gateway"
+            }
+        }
+        stage('Build Image') {
+                steps {
+                    sh 'docker build -t lopesdev/api-gateway:latest api-gateway'
+                }
+        }
+        stage('DockerHub Login') {
+                environment {
+                    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+                }
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
+        }
+        stage('Push Image') {
+            steps {
+                sh 'docker push lopesdev/api-gateway:latest'
+            }
+        }
+	}
+        post {
+            always {
+                sh 'docker logout'
+                cleanWs()
+                sh 'docker rmi lopesdev/api-gateway:latest'
+            }
+        }
+}

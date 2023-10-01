@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: order-configmap
+data:
+  inventory-url: inventory-service
+  db-host: mysql

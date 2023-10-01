@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clean') {
+            steps {
+                sh "mvn clean install -pl /notification-service"
+            }
+        }
+        stage('Test') {
+            steps {
+                sh "mvn test -pl /notification-service"
+            }
+        }
+        stage('Build Image') {
+                steps {
+                    sh 'docker build -t lopesdev/notification-service:latest notification-service'
+                }
+        }
+        stage('DockerHub Login') {
+                environment {
+                    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+                }
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
+        }
+        stage('Push Image') {
+            steps {
+                sh 'docker push lopesdev/notification-service:latest'
+            }
+        }
+	}
+        post {
+            always {
+                sh 'docker logout'
+                cleanWs()
+                sh 'docker rmi lopesdev/notification-service:latest'
+            }
+        }
+}
